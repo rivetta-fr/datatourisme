@@ -21,7 +21,7 @@ with open(re.sub(r'json.*', 'csv', sys.argv[1]), 'w') as csvfile:
     fields = ['id', 'label', 'type', 'theme', 'startdate', 'enddate',
               'street', 'postalcode', 'city', 'insee',
               'latitude', 'longitude', 'email', 'web', 'tel',
-              'lastupdate', 'comment']
+              'lastupdate', 'linkimg', 'comment']
     csv_out = csv.writer(csvfile)
     csv_out.writerow(fields)
 
@@ -51,12 +51,15 @@ with open(re.sub(r'json.*', 'csv', sys.argv[1]), 'w') as csvfile:
             cp = ldget(addr, ['schema:postalCode'], '')
             city = ldget(addr, ['schema:addressLocality'])
             insee = ldget(addr, ['hasAddressCity', 'insee'])
-            last_update = ldget(addr, ['lastUpdate', '@value' ])
+            last_update = ldget(e, ['lastUpdate', '@value'])
             event_type = '/'.join(ldget(e, ['@type']))
             email = ldget(e, ['hasContact', 'schema:email'])
             web = ldget(e, ['hasContact', 'foaf:homepage'])
             tel = ldget(e, ['hasContact', 'schema:telephone'])
-
+            linkimg = ldget(e, ['hasMainRepresentation','ebucore:hasRelatedResource', 'ebucore:locator', '@value'])
+            img = ""
+            if linkimg is not None:
+                img = linkimg
             themes = ldget(e, ['hasTheme'])
             event_theme = ''
             if themes is not None:
@@ -70,7 +73,4 @@ with open(re.sub(r'json.*', 'csv', sys.argv[1]), 'w') as csvfile:
                 event_theme = event_theme[:-2]
 
             # écriture dans le fichier CSV
-            csv_out.writerow([uri, label, event_type, event_theme, startdate,
-                              enddate, street, cp, city, insee, lat, lon,
-                              email, web, tel,
-                              last_update, comment])
+            csv_out.writerow([uri, label, event_type, event_theme, startdate, enddate, street, cp, city, insee, lat, lon, email, web, tel, last_update, img, comment])
