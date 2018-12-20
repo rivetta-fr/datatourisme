@@ -41,8 +41,8 @@ with open(re.sub(r'json.*', 'csv', sys.argv[1]), 'w') as csvfile:
             comment = ""
             if commentlang == 'fr':
                 comment = ldget(commentobj, ['@value'])
-            startdate = ldget(e, ['takesPlaceAt', ':startDate', '@value'])
-            enddate = ldget(e, ['takesPlaceAt', ':endDate', '@value'])
+            startdate = ldget(e, ['takesPlaceAt', 'startDate', '@value'])
+            enddate = ldget(e, ['takesPlaceAt', 'endDate', '@value'])
             geo = ldget(e, ['isLocatedAt', 'schema:geo'])
             lat = ldget(geo, ['schema:latitude', '@value'])
             lon = ldget(geo, ['schema:longitude', '@value'])
@@ -51,7 +51,7 @@ with open(re.sub(r'json.*', 'csv', sys.argv[1]), 'w') as csvfile:
             cp = ldget(addr, ['schema:postalCode'], '')
             city = ldget(addr, ['schema:addressLocality'])
             insee = ldget(addr, ['hasAddressCity', 'insee'])
-            last_update = ldget(addr, ['lastUpdate'])
+            last_update = ldget(addr, ['lastUpdate', '@value' ])
             event_type = '/'.join(ldget(e, ['@type']))
             email = ldget(e, ['hasContact', 'schema:email'])
             web = ldget(e, ['hasContact', 'foaf:homepage'])
